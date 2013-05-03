@@ -101,14 +101,12 @@ limitations under the License.
     <target name="mongo-servers">
         <antcall target="mongo-shard-0"/>
         <antcall target="mongo-shard-0a"/>
-        <antcall target="mongo-arbiter-0"/>
         <antcall target="mongo-shard-1"/>
         <antcall target="mongo-shard-1a"/>
-        <antcall target="mongo-arbiter-1"/>
         <antcall target="mongo-config-0"/>
         <antcall target="mongo-config-1"/>
         <antcall target="mongo-config-2"/>
-        <sleep seconds="5"/>
+        <sleep seconds="180"/>
         <antcall target="mongos"/>
     </target>
 
