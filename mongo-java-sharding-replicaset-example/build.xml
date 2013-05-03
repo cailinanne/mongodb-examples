@@ -106,7 +106,7 @@ limitations under the License.
         <antcall target="mongo-config-0"/>
         <antcall target="mongo-config-1"/>
         <antcall target="mongo-config-2"/>
-        <sleep seconds="180"/>
+        <sleep seconds="300"/>
         <antcall target="mongos"/>
     </target>
 
@@ -196,6 +196,9 @@ limitations under the License.
             <arg value="${mongo.port}"/>
             <arg value="--dbpath"/>
             <arg value="${mongo.dir.db}"/>
+            <arg value="--logpath"/>
+            <arg value="/var/log/mongodb/mongo-shard-${mongo.port}.log"/>
+            <arg value="--smallfiles"/>
         </exec>
     </target>
 
@@ -237,6 +240,9 @@ limitations under the License.
             <arg value="${mongo.port}"/>
             <arg value="--dbpath"/>
             <arg value="${mongo.dir.db}"/>
+            <arg value="--logpath"/>
+            <arg value="/var/log/mongodb/mongo-config-${mongo.port}.log"/>
+            <arg value="--smallfiles"/>
         </exec>
     </target>
 
@@ -250,6 +256,8 @@ limitations under the License.
             <arg value="localhost:27022,localhost:27025,localhost:27026"/>
             <arg value="--chunkSize"/>
             <arg value="1"/>
+            <arg value="--logpath"/>
+            <arg value="/var/log/mongodb/mongo-mongos.log"/>
         </exec>
     </target>
 
@@ -267,6 +275,9 @@ limitations under the License.
             <arg value="${mongo.port}"/>
             <arg value="--dbpath"/>
             <arg value="${mongo.dir.db}"/>
+            <arg value="--logpath"/>
+            <arg value="/var/log/mongodb/mongo-arbiter-${mongo.port}.log"/>
+            <arg value="--smallfiles"/>
         </exec>
     </target>
 
