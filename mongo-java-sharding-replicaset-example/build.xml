@@ -106,7 +106,7 @@ limitations under the License.
         <antcall target="mongo-config-0"/>
         <antcall target="mongo-config-1"/>
         <antcall target="mongo-config-2"/>
-        <sleep seconds="240"/>
+        <sleep seconds="180"/>
         <antcall target="mongos"/>
     </target>
 

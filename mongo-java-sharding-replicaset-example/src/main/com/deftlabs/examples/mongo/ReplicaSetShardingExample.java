@@ -108,9 +108,6 @@ public final class ReplicaSetShardingExample {
         for (final int port : pPorts) {
             final BasicDBObject server = new BasicDBObject("_id", idx++);
             server.put("host", ("localhost:" + port));
-
-            if (idx == 2) server.put("arbiterOnly", true);
-
             servers.add(server);
         }
 
