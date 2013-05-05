@@ -22,6 +22,8 @@ limitations under the License.
     <!-- Set the base attributes.                                            -->
     <!-- ******************************************************************* -->
 
+    <property name="dir.log" value="log"/>
+
     <property name="dir.build" value="build"/>
     <property name="dir.build.java" value="${dir.build}/java/classes"/>
 
@@ -69,6 +71,7 @@ limitations under the License.
     <target name="run" depends="compile">
 
         <antcall target="mongo-servers"/>
+        <echo message="Configuring replica sets and shards. Note - this may take several minutes."/>
 
         <junit fork="yes" haltonfailure="true">
             <jvmarg value="-Duser.timezone=GMT"/>
@@ -99,6 +102,7 @@ limitations under the License.
     <!-- ******************************************************************* -->
 
     <target name="mongo-servers">
+        <mkdir dir="${dir.log}"/>
         <antcall target="mongo-shard-0"/>
         <antcall target="mongo-shard-0a"/>
         <antcall target="mongo-shard-1"/>
@@ -106,7 +110,8 @@ limitations under the License.
         <antcall target="mongo-config-0"/>
         <antcall target="mongo-config-1"/>
         <antcall target="mongo-config-2"/>
-        <sleep seconds="180"/>
+        <echo message="Sleeping for 2 minutes to give all servers time to initialize"/>
+        <sleep seconds="120"/>
         <antcall target="mongos"/>
     </target>
 
@@ -197,7 +202,7 @@ limitations under the License.
             <arg value="--dbpath"/>
             <arg value="${mongo.dir.db}"/>
             <arg value="--logpath"/>
-            <arg value="/var/log/mongodb/mongo-shard-${mongo.port}.log"/>
+            <arg value="${dir.log}/mongo-shard-${mongo.port}.log"/>
             <arg value="--smallfiles"/>
         </exec>
     </target>
@@ -241,7 +246,7 @@ limitations under the License.
             <arg value="--dbpath"/>
             <arg value="${mongo.dir.db}"/>
             <arg value="--logpath"/>
-            <arg value="/var/log/mongodb/mongo-config-${mongo.port}.log"/>
+            <arg value="${dir.log}/mongo-config-${mongo.port}.log"/>
             <arg value="--smallfiles"/>
         </exec>
     </target>
@@ -257,7 +262,7 @@ limitations under the License.
             <arg value="--chunkSize"/>
             <arg value="1"/>
             <arg value="--logpath"/>
-            <arg value="/var/log/mongodb/mongo-mongos.log"/>
+            <arg value="${dir.log}/mongo-mongos.log"/>
         </exec>
     </target>
 
@@ -276,7 +281,7 @@ limitations under the License.
             <arg value="--dbpath"/>
             <arg value="${mongo.dir.db}"/>
             <arg value="--logpath"/>
-            <arg value="/var/log/mongodb/mongo-arbiter-${mongo.port}.log"/>
+            <arg value="${dir.log}/mongo-arbiter-${mongo.port}.log"/>
             <arg value="--smallfiles"/>
         </exec>
     </target>
