@@ -42,7 +42,10 @@ limitations under the License.
     <!-- Remove the build directory.                                         -->
     <!-- ******************************************************************* -->
 
-    <target name="clean"><delete dir="${dir.build}"/></target>
+    <target name="clean">
+        <delete dir="${dir.build}"/>
+        <delete dir="${dir.log}"/>
+    </target>
 
     <!-- ******************************************************************* -->
     <!-- Compile the java classes.                                           -->
@@ -71,7 +74,7 @@ limitations under the License.
     <target name="run" depends="compile">
 
         <antcall target="mongo-servers"/>
-        <echo message="Configuring replica sets and shards. Note - this may take several minutes."/>
+        <echo message="Configuring replica sets and shards. Note - this may take about a minute."/>
 
         <junit fork="yes" haltonfailure="true">
             <jvmarg value="-Duser.timezone=GMT"/>
@@ -81,6 +84,7 @@ limitations under the License.
             <jvmarg value="-DsocksProxtPort"/>
             <jvmarg value="-Dhttps.proxyHost"/>
             <jvmarg value="-Dhttp.proxyHost"/>
+            <jvmarg value="-Dmongo.host=${mongo.host}"/>
             <classpath refid="classpath.all"/>
 
             <classpath><pathelement path="${dir.build.java}"/></classpath>
@@ -110,8 +114,8 @@ limitations under the License.
         <antcall target="mongo-config-0"/>
         <antcall target="mongo-config-1"/>
         <antcall target="mongo-config-2"/>
-        <echo message="Sleeping for 2 minutes to give all servers time to initialize"/>
-        <sleep seconds="120"/>
+        <echo message="Sleeping for 10 seconds to give all servers time to initialize"/>
+        <sleep seconds="10"/>
         <antcall target="mongos"/>
     </target>
 
@@ -204,6 +208,9 @@ limitations under the License.
             <arg value="--logpath"/>
             <arg value="${dir.log}/mongo-shard-${mongo.port}.log"/>
             <arg value="--smallfiles"/>
+            <arg value="--oplogSize"/>
+            <arg value="100"/>
+            <arg value="--nojournal"/>
         </exec>
     </target>
 
@@ -248,6 +255,9 @@ limitations under the License.
             <arg value="--logpath"/>
             <arg value="${dir.log}/mongo-config-${mongo.port}.log"/>
             <arg value="--smallfiles"/>
+            <arg value="--oplogSize"/>
+            <arg value="100"/>
+            <arg value="--nojournal"/>
         </exec>
     </target>
 
@@ -258,7 +268,7 @@ limitations under the License.
     <target name="mongos">
         <exec executable="mongos" spawn="true">
             <arg value="--configdb"/>
-            <arg value="localhost:27022,localhost:27025,localhost:27026"/>
+            <arg value="${mongo.host}:27022,${mongo.host}:27025,${mongo.host}:27026"/>
             <arg value="--chunkSize"/>
             <arg value="1"/>
             <arg value="--logpath"/>
@@ -283,6 +293,9 @@ limitations under the License.
             <arg value="--logpath"/>
             <arg value="${dir.log}/mongo-arbiter-${mongo.port}.log"/>
             <arg value="--smallfiles"/>
+            <arg value="--oplogSize"/>
+            <arg value="100"/>
+            <arg value="--nojournal"/>
         </exec>
     </target>
 

@@ -44,27 +44,29 @@ public final class ReplicaSetShardingExample {
 
     @Before public void setupCluster() throws Exception {
 
+        String host = System.getProperty("mongo.host");
+
         // Configure the replica sets.
         configureReplicaSet("shard0ReplicaSet", new int[] { 27018, 27019 });
 
-        Thread.sleep(61000);
+        Thread.sleep(10000);
 
         configureReplicaSet("shard1ReplicaSet", new int[] { 27020, 27021 });
 
-        Thread.sleep(61000);
+        Thread.sleep(10000);
 
         // Connect to mongos
-        final Mongo mongo = new Mongo(new DBAddress("localhost", 27017, "admin"));
+        final Mongo mongo = new Mongo(new DBAddress(host, 27017, "admin"));
 
         // Add the first replica set shard.
         CommandResult result
-        = mongo.getDB("admin").command(new BasicDBObject("addshard", "shard0ReplicaSet/localhost:27018,localhost:27019"));
+        = mongo.getDB("admin").command(new BasicDBObject("addshard", "shard0ReplicaSet/" + host + ":27018," + host + ":27019"));
 
         System.out.println(result);
 
         // Add the second replica set shard.
         result
-        = mongo.getDB("admin").command(new BasicDBObject("addshard", "shard1ReplicaSet/localhost:27020,localhost:27021"));
+        = mongo.getDB("admin").command(new BasicDBObject("addshard", "shard1ReplicaSet/" + host + ":27020," + host + ":27021"));
 
         System.out.println(result);
 
@@ -98,6 +100,7 @@ public final class ReplicaSetShardingExample {
         throws Exception
     {
         System.out.println("----- configureRepliaSet");
+        String host = System.getProperty("mongo.host");
 
         // First we need to setup the replica sets.
         final BasicDBObject config = new BasicDBObject("_id", pReplicaSetName);
@@ -107,13 +110,13 @@ public final class ReplicaSetShardingExample {
         int idx=0;
         for (final int port : pPorts) {
             final BasicDBObject server = new BasicDBObject("_id", idx++);
-            server.put("host", ("localhost:" + port));
+            server.put("host", (host + ":" + port));
             servers.add(server);
         }
 
         config.put("members", servers);
 
-        final Mongo mongo = new Mongo(new DBAddress("localhost", pPorts[0], "admin"));
+        final Mongo mongo = new Mongo(new DBAddress(host, pPorts[0], "admin"));
 
         final CommandResult result
         = mongo.getDB("admin").command(new BasicDBObject("replSetInitiate", config));
@@ -122,7 +125,8 @@ public final class ReplicaSetShardingExample {
 
     @Test public void testShards() throws Exception {
 
-        final Mongo mongo = new Mongo(new DBAddress("localhost", 27017, "testsharding"));
+        String host = System.getProperty("mongo.host");
+        final Mongo mongo = new Mongo(new DBAddress(host, 27017, "testsharding"));
 
         final DBCollection shardCollection = mongo.getDB("testsharding").getCollection("logs");
 
