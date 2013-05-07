@@ -49,11 +49,11 @@ public final class ReplicaSetShardingExample {
         // Configure the replica sets.
         configureReplicaSet("shard0ReplicaSet", new int[] { 27018, 27019 });
 
-        Thread.sleep(10000);
+        Thread.sleep(30000);
 
         configureReplicaSet("shard1ReplicaSet", new int[] { 27020, 27021 });
 
-        Thread.sleep(10000);
+        Thread.sleep(30000);
 
         // Connect to mongos
         final Mongo mongo = new Mongo(new DBAddress("localhost", 27017, "admin"));
