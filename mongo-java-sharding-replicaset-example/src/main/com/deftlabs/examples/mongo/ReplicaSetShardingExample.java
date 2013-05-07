@@ -56,7 +56,7 @@ public final class ReplicaSetShardingExample {
         Thread.sleep(10000);
 
         // Connect to mongos
-        final Mongo mongo = new Mongo(new DBAddress(host, 27017, "admin"));
+        final Mongo mongo = new Mongo(new DBAddress("localhost", 27017, "admin"));
 
         // Add the first replica set shard.
         CommandResult result
@@ -116,7 +116,7 @@ public final class ReplicaSetShardingExample {
 
         config.put("members", servers);
 
-        final Mongo mongo = new Mongo(new DBAddress(host, pPorts[0], "admin"));
+        final Mongo mongo = new Mongo(new DBAddress("localhost", pPorts[0], "admin"));
 
         final CommandResult result
         = mongo.getDB("admin").command(new BasicDBObject("replSetInitiate", config));
@@ -125,8 +125,7 @@ public final class ReplicaSetShardingExample {
 
     @Test public void testShards() throws Exception {
 
-        String host = System.getProperty("mongo.host");
-        final Mongo mongo = new Mongo(new DBAddress(host, 27017, "testsharding"));
+        final Mongo mongo = new Mongo(new DBAddress("localhost", 27017, "testsharding"));
 
         final DBCollection shardCollection = mongo.getDB("testsharding").getCollection("logs");
 
